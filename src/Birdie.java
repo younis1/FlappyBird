@@ -4,11 +4,16 @@ import bagel.Keys;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
+import java.util.PrimitiveIterator;
+
 public class Birdie{
     private static final double ACCELERATION = 0.4;
     private static final double INITIAL_X = 200;
     private static final double INITIAL_Y = 350;
     private static final double FLYING_STEP = 6.0;
+    private static final int MAX_ACCELERATION = 10;
+    private static final int FLAP_FRAMES = 10;
+    private static final int JUMPING_FRAMES = 6;
     private static  double x = INITIAL_X;  // Does not change
     private double y = INITIAL_Y;
     private double speed = 0;
@@ -31,10 +36,10 @@ public class Birdie{
             birdWingUp = new Image("project-2-skeleton\\res\\level-0\\birdWingUp.png");
         }
     }
-    public void update(Input input){
+    public void update(Input input, double timescale){
         // Drawing wing flap
 
-        if (frameCounter % 10 == 0){
+        if (frameCounter % FLAP_FRAMES == 0){
             birdWingUp.draw(this.x, this.y);
             frameCounter = 0;
         }
@@ -43,11 +48,11 @@ public class Birdie{
         }
 
         // Calculating Speed
-        if (speed < 10){
-            speed = speed + ACCELERATION;
+        if (speed < MAX_ACCELERATION * timescale){
+            speed = speed + (ACCELERATION * timescale);
         }
-        if (input.isDown(Keys.SPACE)){
-            speed = -6;
+        if (input.wasPressed(Keys.SPACE)){
+            speed = -JUMPING_FRAMES * timescale;
         }
         this.y += speed;
         frameCounter += 1;

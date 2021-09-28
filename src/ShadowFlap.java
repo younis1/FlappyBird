@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class ShadowFlap extends AbstractGame {
     private int levelNumber = 0;
     private int score = 0;
-    private int frameCounter = 0;
+    private double frameCounter = 0;
     private int emptyLives = 0;
     private int lastCollisionInScore = 0;
     private int currentLevel = 0;
@@ -19,8 +19,8 @@ public class ShadowFlap extends AbstractGame {
     private static final double INITIAL_X = 200;
     private static final double INITIAL_Y = 350;
     private final int WAITING_FRAMES_AFTER_LEVEL_O = 20;
-    private final int LEVEL_0_LIVES = 3;
-    private final int LEVEL_1_LIVES = 6;
+    private final int LEVEL_0_LIVES = 500;
+    private final int LEVEL_1_LIVES = 500;
     private final int LEVEL_0_SCORE = 10;
     private final int LEVEL_1_SCORE = 30;
     private final int WINNING_SCORE = 30;
@@ -105,13 +105,14 @@ public class ShadowFlap extends AbstractGame {
                 }
 
                 // Drawing Bird
-                birdieLevel_0.update(input);
+                birdieLevel_0.update(input, Pipes.getChangePercent());
 
                 //Drawing Score
                 font.drawString("SCORE: " + score, SCORE_INDENT, SCORE_INDENT);
 
                 // Adding new pipes every 100 frames, or shorter if faster timeframes
                 if (frameCounter >= PIPES_FRAME_DIFF) {
+
                     frameCounter = 0;
                     pipesLevel_0.add(new Pipes(0));
                 }
@@ -212,7 +213,7 @@ public class ShadowFlap extends AbstractGame {
                 }
 
                 // Drawing Bird
-                birdieLevel_1.update(input);
+                birdieLevel_1.update(input, Pipes.getChangePercent());
 
                 //Drawing Score
                 font.drawString("SCORE: " + score, SCORE_INDENT, SCORE_INDENT);

@@ -26,6 +26,7 @@ public class Pipes {
     private static final int PIPES_TYPES_DIF = 200;
     private static final int MAX_SPEED = 5;
     private static final int MIN_SPEED = 1;
+    private static final double MIN_CHANGE_PERCENT = 0.5;
     private static final int LOWEST_STEEL = 100;
     private static final int HIGHEST_STEEL = 500;
     private static double pipeImageHeight; //add final?
@@ -77,7 +78,7 @@ public class Pipes {
 
     public static void setSpeed(int speedChange){
         if (speedChange<0){
-            if (speedMetre != MIN_SPEED){
+            if (speedMetre != MIN_SPEED && changePercent > MIN_CHANGE_PERCENT){
                 changePercent = changePercent * 0.5;
                 speedMetre -= 1;
                 speed = speed*0.5; //decrease by 50%
