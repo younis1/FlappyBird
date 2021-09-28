@@ -22,6 +22,7 @@ public class ShadowFlap extends AbstractGame {
     private final int LEVEL_0_LIVES = 3;
     private final int LEVEL_1_LIVES = 6;
     private final int LEVEL_0_SCORE = 10;
+    private final int LEVEL_1_SCORE = 30;
     private final int WINNING_SCORE = 30;
     private final int WINDOW_WIDTH = 1024;
     private final int WINDOW_HEIGHT = 768;
@@ -63,28 +64,228 @@ public class ShadowFlap extends AbstractGame {
      * allows the game to exit when the escape key is pressed.
      */
 
-    /**
-     * else {
-     * //GameOver Level 0
-     * font.drawString("GAME OVER",(WINDOW_WIDTH - font.getWidth("GAME OVER"))/2,
-     * WINDOW_HEIGHT/2);
-     * font.drawString("FINAL SCORE: " + score,(WINDOW_WIDTH - font.getWidth("FINAL SCORE: "))/2,
-     * WINDOW_HEIGHT/2 + FINAL_SCORE_SHIFT );
-     * }
-     */
+
+
     @Override
     public void update(Input input) {
         if (!gameEnded) {
             //Waiting Screen and Lvl 0
 
-            if (!gameStarted) {
+            if (!gameStarted && !level_0_completed) {
                 backgroundImageLevel0.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
                 font.drawString("PRESS SPACE TO START", (WINDOW_WIDTH - font.getWidth("PRESS SPACE TO START")) / 2,
                         WINDOW_HEIGHT / 2);
-                if (input.isDown(Keys.SPACE)) {
+
+                if (input.wasPressed(Keys.SPACE)) {
                     this.gameStarted = true;
                 }
-            } 
+            }
+            else if(gameStarted && !level_0_completed) {
+                // level 0 in progress
+                // set speed
+                backgroundImageLevel0.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+                frameCounter += Pipes.getChangePercent();  // to generate pipes every "100/frames*timescale" frames
+                if (input.wasPressed(Keys.L)) {
+                    Pipes.setSpeed(1);
+                }
+                if (input.wasPressed(Keys.K)) {
+                    Pipes.setSpeed(-1);
+                }
+
+
+
+                // Drawing lives
+
+                int i;
+                for (i = 0; i < emptyLives; i++) {
+                    noLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
+                }
+                for (i = emptyLives; i < LEVEL_0_LIVES; i++) {
+                    fullLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
+                }
+
+                // Drawing Bird
+                birdieLevel_0.update(input);
+
+                //Drawing Score
+                font.drawString("SCORE: " + score, SCORE_INDENT, SCORE_INDENT);
+
+                // Adding new pipes every 100 frames, or shorter if faster timeframes
+                if (frameCounter >= PIPES_FRAME_DIFF) {
+                    frameCounter = 0;
+                    pipesLevel_0.add(new Pipes(0));
+                }
+
+                // Detecting out of bound
+                if (birdieLevel_0.getPosition().y > WINDOW_HEIGHT || birdieLevel_0.getPosition().y < 0) {
+                    emptyLives += 1;
+                    birdieLevel_0.setPosition(INITIAL_X, INITIAL_Y);
+                }
+
+                // Detecting Collision with pipes and deleting out-of-bound pipes, and drawing pipes
+                // and adding score
+
+                ArrayList<Integer> outOfBound = new ArrayList<Integer>();
+                for (i = 0; i < pipesLevel_0.size(); i++) {
+                    Pipes pipes = pipesLevel_0.get(i);
+                    // Collision detection
+                    if (birdieLevel_0.getRectangle().intersects(pipes.getLowerRectangle()) ||
+                            birdieLevel_0.getRectangle().intersects(pipes.getUpperRectangle())) {
+                        emptyLives += 1;
+                        pipes.hideLower();
+                        pipes.hideUpper();
+                        lastCollisionInScore = 1;
+                    }
+
+                    // Delete pipes that are out of bound
+                    if (pipes.getPosition().x < -pipes.getWidth()) {
+                        outOfBound.add((Integer) i);
+                    } else {
+                        pipes.update(input);
+                        // add one to score if birds centre passed pipes right (getPosition returns centre of bird,left edge of pipe)
+                        if (pipes.getPosition().x + pipes.getWidth() - pipes.getSpeed() < birdieLevel_0.getPosition().x &&
+                                birdieLevel_0.getPosition().x < pipes.getPosition().x + pipes.getWidth()) {
+                            score += 1 - lastCollisionInScore;
+                            lastCollisionInScore = 0;
+                        }
+                    }
+                }
+
+                // Add one to score if bird passed the pipe
+
+                for (Integer integer : outOfBound) {
+                    pipesLevel_0.remove(integer);
+                }
+
+                if (emptyLives == LEVEL_0_LIVES) {
+                    gameEnded = true;
+                }
+
+                if (score == LEVEL_0_SCORE) {
+                    level_0_completed = true;
+                }
+            }
+            // LEVEL 0 IS COMPLETED
+
+            //Level up screen
+            else if (waitingFrames < 20) {
+                backgroundImageLevel0.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+                waitingFrames += 1;
+                font.drawString("LEVEL-UP!", (WINDOW_WIDTH - font.getWidth("LEVEL-UP!")) / 2,
+                        WINDOW_HEIGHT / 2);
+
+                // reset everything
+                frameCounter = 0;
+                emptyLives = 0;
+                gameStarted = false;
+                score = 0;
+                Pipes.resetSpeed();
+
+            } else if (!gameStarted && !level_1_completed){
+                // Level 1
+                backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+                font.drawString("PRESS SPACE TO START", (WINDOW_WIDTH - font.getWidth("PRESS SPACE TO START")) / 2,
+                        WINDOW_HEIGHT / 2);
+                if (input.wasPressed(Keys.SPACE)) {
+                    this.gameStarted = true;
+                }
+            }
+            else if (gameStarted && !level_1_completed) {
+                // Lvl 1
+                // Drawing lives
+                backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+                frameCounter += Pipes.getChangePercent();  // to generate pipes every "100/frames*timescale" frames
+                if (input.wasPressed(Keys.L)) {
+                    Pipes.setSpeed(1);
+                }
+                if (input.wasPressed(Keys.K)) {
+                    Pipes.setSpeed(-1);
+                }
+
+
+                int i;
+                for (i = 0; i < emptyLives; i++) {
+                    noLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
+                }
+                for (i = emptyLives; i < LEVEL_1_LIVES; i++) {
+                    fullLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
+                }
+
+                // Drawing Bird
+                birdieLevel_1.update(input);
+
+                //Drawing Score
+                font.drawString("SCORE: " + score, SCORE_INDENT, SCORE_INDENT);
+
+                // Adding new pipes every 100 frames
+                if (frameCounter >= PIPES_FRAME_DIFF) {
+                    frameCounter = 0;
+                    pipesLevel_1.add(new Pipes(1));
+                }
+
+                // Detecting out of bound
+                if (birdieLevel_1.getPosition().y > WINDOW_HEIGHT || birdieLevel_1.getPosition().y < 0) {
+                    emptyLives += 1;
+                    birdieLevel_1.setPosition(INITIAL_X, INITIAL_Y);
+                }
+
+                // Detecting Collision with pipes and deleting out-of-bound pipes, and drawing pipes
+                // and adding score
+
+                ArrayList<Integer> outOfBound = new ArrayList<Integer>();
+                for (i = 0; i < pipesLevel_1.size(); i++) {
+                    Pipes pipes = pipesLevel_1.get(i);
+                    // Collision detection
+                    if (birdieLevel_1.getRectangle().intersects(pipes.getLowerRectangle()) ||
+                            birdieLevel_1.getRectangle().intersects(pipes.getUpperRectangle())) {
+                        emptyLives += 1;
+                        pipes.hideLower();
+                        pipes.hideUpper();
+                        lastCollisionInScore = 1;
+                    }
+
+                    // Delete pipes that are out of bound
+                    if (pipes.getPosition().x < -pipes.getWidth()) {
+                        outOfBound.add((Integer) i);
+                    } else {
+                        pipes.update(input);
+                        // add one to score if birds centre passed pipes right (getPosition returns centre of bird,left edge of pipe)
+                        if (pipes.getPosition().x + pipes.getWidth() - pipes.getSpeed() < birdieLevel_1.getPosition().x &&
+                                birdieLevel_1.getPosition().x < pipes.getPosition().x + pipes.getWidth()) {
+                            score += 1 - lastCollisionInScore;
+                            lastCollisionInScore = 0;
+                        }
+                    }
+                }
+                for (Integer integer : outOfBound) {
+                    pipesLevel_1.remove(integer);
+                }
+
+                if (emptyLives == LEVEL_1_LIVES) {
+                    gameEnded = true;
+                }
+
+                if (score == LEVEL_1_SCORE) {
+                    level_1_completed = true;
+                }
+
+
+            }
+        }
+
+        else{
+            //GAMEOVER
+
+            if (level_0_completed){
+                backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+            }
+            else{
+                backgroundImageLevel0.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+            }
+            font.drawString("GAME OVER",(WINDOW_WIDTH - font.getWidth("GAME OVER"))/2,
+                    WINDOW_HEIGHT/2);
+            font.drawString("FINAL SCORE: " + score,(WINDOW_WIDTH - font.getWidth("FINAL SCORE: "))/2,
+                    WINDOW_HEIGHT/2 + FINAL_SCORE_SHIFT );
         }
     }
 }
