@@ -9,7 +9,7 @@ import java.util.Random;
 import java.lang.Math.*;
 
 public class Pipes {
-    private static final int optionsNumberForLevel0 = 3;
+    private static final int OPTIONS_NUMBER_FOR_LEVEL_0 = 3;
     private static double speed = 3.0; // initial speed
     private static int speedMetre = 1;
     private static double changePercent = 1.0;
@@ -60,7 +60,7 @@ public class Pipes {
             }
         } else {
             // levelNumber = 0
-            int option = rand.nextInt(optionsNumberForLevel0); // 0, 1, or 2
+            int option = rand.nextInt(OPTIONS_NUMBER_FOR_LEVEL_0); // 0, 1, or 2
             upperPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\plasticPipe.png");
             lowerPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\plasticPipeRotated.png");
             this.upperPipeLowerY = HIGH_PIPE_Y + option*PIPES_TYPES_DIF;
