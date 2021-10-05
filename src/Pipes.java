@@ -8,7 +8,8 @@ import java.util.Random;
 
 public class Pipes {
     private static final int OPTIONS_NUMBER_FOR_LEVEL_0 = 3;
-    private static double speed = 3.0; // initial speed
+    private static final double INITIAL_SPEED = 3.0;
+    private static double speed = INITIAL_SPEED; // initial speed
     private static int speedMetre = 1;
     private static double changePercent = 1.0;
     private boolean displayLower = true;
@@ -25,8 +26,8 @@ public class Pipes {
     private static final int WINDOW_HEIGHT = 768;  // window height
     private static final int HIGH_PIPE_Y = 100;
     private static final int PIPES_TYPES_DIF = 200;
-    private static final int MAX_SPEED = 5;
-    private static final int MIN_SPEED = 1;
+    private static final int MAX_SPEED_METRE = 5;
+    private static final int MIN_SPEED_METRE = 1;
     private static final int FLAME_DURATION = 20;
     private static final int FLAME_INTERVAL = 20;
     private static final double MIN_CHANGE_PERCENT = 0.5;
@@ -39,6 +40,7 @@ public class Pipes {
     private int flameCounter = 1;
     private int flameDurationCounter = 0;
     private double x;
+    private boolean destroyed = false;
     Random rand = new Random();
 
     public Pipes(int levelNumber) {
@@ -102,15 +104,16 @@ public class Pipes {
 
     public static void setSpeed(int speedChange){
         if (speedChange<0){
-            if (speedMetre != MIN_SPEED && changePercent > MIN_CHANGE_PERCENT){
-                changePercent = changePercent * 0.5;
+            // slowing down
+            if (speedMetre != MIN_SPEED_METRE && changePercent > MIN_CHANGE_PERCENT){
                 speedMetre -= 1;
-                speed = speed*0.5; //decrease by 50%
+                changePercent = Math.pow(1.5, speedMetre);
+                speed = INITIAL_SPEED * changePercent; //decrease by 50%
             }
         }
         else{
             // increasing speed
-            if (speedMetre != MAX_SPEED){
+            if (speedMetre != MAX_SPEED_METRE){
                 speedMetre += 1;
                 changePercent = changePercent * 1.5;
                 speed = speed *1.5; //increase by 50%
@@ -127,7 +130,7 @@ public class Pipes {
     }
 
     public static void resetSpeed(){
-        speed = 3;
+        speed = INITIAL_SPEED;
         speedMetre = 1;
         changePercent = 1.0;
     }
@@ -141,21 +144,21 @@ public class Pipes {
         return new Point(this.x, this.upperPipeLowerY);
     }
 
-    public Rectangle getUpperRectangle(){
+    public Rectangle getUpperRectangle(boolean withWeapon){
         if (!displayUpper){
             return new Rectangle(-1, -1, 0,0); // impossible to intersect with bird
         }
-        if (flameCounter % FLAME_INTERVAL ==0){
+        if (flameCounter % FLAME_INTERVAL ==0 && !withWeapon){
             return new Rectangle(this.x,upperPipeLowerY - pipeImageHeight, pipeImageWidth, pipeImageHeight + FLAME_HEIGHT/2);
         }
         return new Rectangle(this.x,upperPipeLowerY - pipeImageHeight, pipeImageWidth, pipeImageHeight);
     }
 
-    public Rectangle getLowerRectangle(){
+    public Rectangle getLowerRectangle(boolean withWeapon){
         if (!displayLower){
             return new Rectangle(-1, -1, 0,0); // impossible to intersect with bird
         }
-        if (flameCounter % FLAME_INTERVAL ==0){
+        if (flameCounter % FLAME_INTERVAL ==0 && !withWeapon){
             return new Rectangle(this.x,upperPipeLowerY + PIPES_GAP - FLAME_HEIGHT/2, pipeImageWidth, pipeImageHeight + FLAME_HEIGHT/2);
         }
         return new Rectangle(this.x,upperPipeLowerY + PIPES_GAP, pipeImageWidth, pipeImageHeight);
@@ -164,13 +167,18 @@ public class Pipes {
     public void hideLower(){
         displayLower = false;
     }
-
     public void hideUpper() {
         displayUpper = false;
     }
-
-    public boolean isItPlastic() {
-        return isPlastic;
+    public void destroy() {
+        hideUpper();
+        hideLower();
+        destroyed = true;
     }
+    public boolean isDestroyed(){ return destroyed;}
+
+    public boolean isItPlastic() {return isPlastic;}
+
+
 }
 

@@ -5,9 +5,14 @@ public class Rock extends Weapon{
     private static final Image bombImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\bomb.png");
     private static final double BOMB_HEIGHT = bombImage.getHeight();
     private static final double BOMB_WIDTH = bombImage.getWidth();
-    public Rock(){
+
+    public Rock(double leftX, double rightX, double upperY, double lowerY) {
         super();
         shootingRange = ROCK_RANGE;
+        image = bombImage;
+        imageHeight = image.getHeight();
+        imageWidth = image.getWidth();
     }
-}
-*/
+
+}*/
+

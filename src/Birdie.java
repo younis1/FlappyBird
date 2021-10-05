@@ -34,7 +34,7 @@ public class Birdie{
             birdWingUp = new Image("project-2-skeleton\\res\\level-0\\birdWingUp.png");
         }
     }
-    public void update(Input input, double timescale){
+    public void update(Input input, double percentChange){
         // Drawing wing flap
 
         if (frameCounter % FLAP_FRAMES == 0){
@@ -46,11 +46,11 @@ public class Birdie{
         }
 
         // Calculating Speed
-        if (speed < MAX_ACCELERATION * timescale){
-            speed = speed + (ACCELERATION * timescale);
+        if (speed < MAX_ACCELERATION * percentChange){
+            speed = speed + (ACCELERATION * percentChange);
         }
         if (input.wasPressed(Keys.SPACE)){
-            speed = -JUMPING_FRAMES * timescale;
+            speed = -JUMPING_FRAMES * percentChange;
         }
         this.y += speed;
         frameCounter += 1;
