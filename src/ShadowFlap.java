@@ -69,6 +69,12 @@ public class ShadowFlap extends AbstractGame {
 
     @Override
     public void update(Input input) {
+
+        if (input.wasPressed(Keys.ESCAPE)){
+            System.exit(0);
+        }
+
+
         if (!gameEnded) {
 
             //Waiting Screen and Lvl 0
@@ -118,7 +124,6 @@ public class ShadowFlap extends AbstractGame {
                     pipesLevel_0.add(new Pipes(0));
                 }
 
-
                 // Detecting out of bound
                 if (birdieLevel_0.getPosition().y > WINDOW_HEIGHT || birdieLevel_0.getPosition().y < 0) {
                     emptyLives += 1;
@@ -126,7 +131,7 @@ public class ShadowFlap extends AbstractGame {
                 }
 
                 // Detecting Collision with pipes and deleting out-of-bound pipes, and drawing pipes
-                // and adding score
+                // and adding score if pipes passed
                 collisionOrScoreDetector( pipesLevel_0,  birdieLevel_0, input);
 
                 if (emptyLives == LEVEL_0_LIVES) {
@@ -139,8 +144,8 @@ public class ShadowFlap extends AbstractGame {
             }
             // LEVEL 0 IS COMPLETED
 
-            //Level up screen
             else if (waitingFrames < WAITING_FRAMES_AFTER_LEVEL_O) {
+                //Level up screen
                 backgroundImageLevel0.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
                 waitingFrames += 1;
                 font.drawString("LEVEL-UP!", (WINDOW_WIDTH - font.getWidth("LEVEL-UP!")) / 2,
@@ -154,7 +159,7 @@ public class ShadowFlap extends AbstractGame {
                 Pipes.resetSpeed();
 
             } else if (!gameStarted && !level_1_completed){
-                // Level 1
+                // Level 1 started
                 backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
                 font.drawString("PRESS SPACE TO START", (WINDOW_WIDTH - font.getWidth("PRESS SPACE TO START")) / 2,
                         WINDOW_HEIGHT / 2);
@@ -191,7 +196,8 @@ public class ShadowFlap extends AbstractGame {
                 //Drawing Score
                 font.drawString("SCORE: " + score, SCORE_INDENT, SCORE_INDENT);
 
-                // Adding new pipes every 100 frames
+                // Adding new pipes every 100/timescale frames
+                // Adding weapons every "WEAPONS_INTERVAL_HUNDREDS" * 100/timescale frames
                 if (frameCounter >= PIPES_FRAME_DIFF) {
                     frameCounter = 0;
                     pipesLevel_1.add(new Pipes(1));
@@ -205,6 +211,8 @@ public class ShadowFlap extends AbstractGame {
 
                 // implements everything about weapons
                 weaponsLogic(weapons, birdieLevel_1, pipesLevel_1, input);
+
+
                 // Detecting out of bound
                 if (birdieLevel_1.getPosition().y > WINDOW_HEIGHT || birdieLevel_1.getPosition().y < 0) {
                     emptyLives += 1;
@@ -221,13 +229,10 @@ public class ShadowFlap extends AbstractGame {
                     level_1_completed = true;
                 }
 
-
             }
             else{
                 // level 1 completed
-                if (input.wasPressed(Keys.ESCAPE)){
-                    System.exit(0);
-                }
+
                 backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
                 font.drawString("CONGRATULATIONS",(WINDOW_WIDTH - font.getWidth("CONGRATULATIONS"))/2,
                         WINDOW_HEIGHT/2);
@@ -235,7 +240,7 @@ public class ShadowFlap extends AbstractGame {
         }
 
         else{
-            //GAMEOVER
+            //GAME OVER
 
             if (level_0_completed){
                 backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
@@ -247,17 +252,13 @@ public class ShadowFlap extends AbstractGame {
                     WINDOW_HEIGHT/2);
             font.drawString("FINAL SCORE: " + score,(WINDOW_WIDTH - font.getWidth("FINAL SCORE: "))/2,
                     WINDOW_HEIGHT/2 + FINAL_SCORE_SHIFT );
-            if (input.wasPressed(Keys.ESCAPE)){
-                System.exit(0);
-            }
+
         }
     }
 
 
-
-
     public void collisionOrScoreDetector(ArrayList<Pipes> pipesLevel, Birdie birdie, Input input){
-
+        // Implements Pipes collision/pass algorithm, deletes old pipes (go out out of bound)
         ArrayList<Integer> outOfBound = new ArrayList<Integer>();
         int i;
         int lastCollisionInScore; // if bird hits the edge, this can contribute to score
@@ -292,7 +293,7 @@ public class ShadowFlap extends AbstractGame {
     }
 
     public double[] getCoordinatesOfLastPipe(ArrayList<Pipes> pipesLevel){
-        // returns coordinates of last pipe to be considered when generating weapons
+        // Return coordinates of last pipe to be considered when generating weapons
         int lastIndex = pipesLevel.size() - 1;
         Pipes lastPipe = pipesLevel.get(lastIndex);
         double[] coordinates = new double[4];
@@ -315,38 +316,41 @@ public class ShadowFlap extends AbstractGame {
     }
 
     public void weaponsLogic(ArrayList<Weapon> weapons, Birdie birdie, ArrayList<Pipes> pipes, Input input){
+        // Implements everything to do with weapons, from detecting collisions, to shooting,to deleting weapons that
+        // went out of bound
         for (Weapon weapon: weapons){
+            // Picks up weapon, while not carrying a weapon
             if (birdie.getRectangle().intersects(weapon.getRectangle()) && !birdie.getWeapon()
                     && !weapon.getIsReleased()){
                 weapon.hold();
                 birdie.setWeaponary(true);
             }
             else if (weapon.getIsHeld()){
+                // holding a weapon
                 if (input.wasPressed((Keys.S))){
                     weapon.release(birdie.getPosition().y);
                     birdie.setWeaponary(false);
                 }
             }
             else if (weapon.getIsReleased()){
-                boolean pipeAfterBird = false;
-                Pipes firstPipe = pipes.get(0); // will get overwritten
-                for (int i=0; i < pipes.size() && !pipeAfterBird;i++){
-                    if (pipes.get(i).getPosition().x > birdie.getPosition().x){
-                        pipeAfterBird = true;
-                        firstPipe = pipes.get(i);
-                    }
-                }
-                if (firstPipe.getLowerRectangle(true).intersects(weapon.getRectangle()) ||
-                        firstPipe.getUpperRectangle(true).intersects(weapon.getRectangle()) && weapon.getIsReleased()){
-                    weapon.colliding();
-                    if (weapon.hasImpact(firstPipe.isItPlastic())){
-                        firstPipe.destroy();
-                        score += 1;
+                // weapon released
+                Pipes currentPipe; // detect pipe and weapons collision
+                for (int i=0; i < pipes.size() ;i++){
+                    currentPipe = pipes.get(i);
+                    if (currentPipe.getLowerRectangle(true).intersects(weapon.getRectangle()) ||
+                            currentPipe.getUpperRectangle(true).intersects(weapon.getRectangle()) && weapon.getIsReleased()){
+
+                        weapon.colliding();
+                        if (weapon.hasImpact(currentPipe.isItPlastic())){
+                            currentPipe.destroy();
+                            score += 1;
+                        }
                     }
                 }
             }
         }
 
+        // delete out of bound weapons
         for(int i=0; i< weapons.size(); i++){
             if (weapons.get(i).isUsed()){
                 weapons.remove(i);
@@ -357,5 +361,4 @@ public class ShadowFlap extends AbstractGame {
             }
         }
     }
-
 }

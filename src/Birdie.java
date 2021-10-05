@@ -36,7 +36,6 @@ public class Birdie{
     }
     public void update(Input input, double percentChange){
         // Drawing wing flap
-
         if (frameCounter % FLAP_FRAMES == 0){
             birdWingUp.draw(this.x, this.y);
             frameCounter = 0;

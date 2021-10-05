@@ -7,19 +7,19 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.Random;
 
 public class Pipes {
-    private static final int OPTIONS_NUMBER_FOR_LEVEL_0 = 3;
+    private static final int OPTIONS_NUMBER_FOR_LEVEL_0 = 3; //low, medium, high
     private static final double INITIAL_SPEED = 3.0;
-    private static double speed = INITIAL_SPEED; // initial speed
-    private static int speedMetre = 1;
-    private static double changePercent = 1.0;
+    private static double speed = INITIAL_SPEED;
+    private static int speedMetre = 1; // timescale
+    private static double changePercent = 1.0;  //the speed change percentage
     private boolean displayLower = true;
     private boolean displayUpper = true;
-    private boolean isPlastic = true;
+    private boolean isPlastic = true;  // to determine if plastic or steel
     private int levelNumber;
     private Image upperPipeImage;
     private Image lowerPipeImage;
-    private static Image upperFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flame.png");
-    private static Image lowerFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flameRotated.png");
+    private final static Image upperFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flame.png");
+    private final static Image lowerFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flameRotated.png");
     public static final double FLAME_HEIGHT = upperFlameImage.getHeight(); // need to be public as this is used in ShadowFlap
     private  static final double FLAME_WIDTH = upperFlameImage.getWidth();
     private static final int WINDOW_WIDTH = 1024;  // window width
@@ -105,7 +105,7 @@ public class Pipes {
     public static void setSpeed(int speedChange){
         if (speedChange<0){
             // slowing down
-            if (speedMetre != MIN_SPEED_METRE && changePercent > MIN_CHANGE_PERCENT){
+            if (speedMetre != MIN_SPEED_METRE){
                 speedMetre -= 1;
                 changePercent = Math.pow(1.5, speedMetre);
                 speed = INITIAL_SPEED * changePercent; //decrease by 50%
@@ -134,6 +134,7 @@ public class Pipes {
         speedMetre = 1;
         changePercent = 1.0;
     }
+
     // returns width of pipe image
     public double getWidth(){
         return pipeImageWidth;
@@ -148,6 +149,7 @@ public class Pipes {
         if (!displayUpper){
             return new Rectangle(-1, -1, 0,0); // impossible to intersect with bird
         }
+        // if flaming pipes
         if (flameCounter % FLAME_INTERVAL ==0 && !withWeapon){
             return new Rectangle(this.x,upperPipeLowerY - pipeImageHeight, pipeImageWidth, pipeImageHeight + FLAME_HEIGHT/2);
         }
@@ -158,6 +160,7 @@ public class Pipes {
         if (!displayLower){
             return new Rectangle(-1, -1, 0,0); // impossible to intersect with bird
         }
+        // if flaming pipes
         if (flameCounter % FLAME_INTERVAL ==0 && !withWeapon){
             return new Rectangle(this.x,upperPipeLowerY + PIPES_GAP - FLAME_HEIGHT/2, pipeImageWidth, pipeImageHeight + FLAME_HEIGHT/2);
         }

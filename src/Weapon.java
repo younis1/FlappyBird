@@ -5,10 +5,9 @@ import bagel.*;
 import bagel.Image;
 
 public class Weapon {
-    private final int WINDOW_WIDTH = 1024;
     private static final int UPPER_BOUND = 600;
     private static final int LOWER_BOUND = 100;
-    private static final int INITIAL_SPEED = 5;
+    private static final int INITIAL_SPEED = 5; // weapon speed
     private static final int HOLDING_SPACE = 30;
     private static final int MINIMUM_V_DISTANCE_TO_PIPE = 60;
     private static final int MINIMUM_H_DISTANCE_TO_PIPE = 100;
@@ -17,16 +16,16 @@ public class Weapon {
     private static final Image bombImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\bomb.png");
     private static final double BOMB_HEIGHT = bombImage.getHeight();
     private static final double BOMB_WIDTH = bombImage.getWidth();
-    private static final double BOMB_RANGE = 200;
+    private static final double BOMB_RANGE = 50;
 
     private static final Image rockImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\rock.png");
     private static final double ROCK_HEIGHT = rockImage.getHeight();
     private static final double ROCK_WIDTH = rockImage.getWidth();
-    private static final double ROCK_RANGE = 200;
+    private static final double ROCK_RANGE = 25;
 
     private boolean isHeld = false;
     private boolean isReleased = false;
-    private boolean isBomb;
+    private boolean isBomb;  //type
     private boolean collided = false;
     private double x;
     private double y;
@@ -35,6 +34,7 @@ public class Weapon {
     private double shootingRange;
     private boolean used = false;
     private int frameCounter = 0;
+
     public Weapon(double leftX, double rightX, double upperY, double lowerY) {
         this.y = ThreadLocalRandom.current().nextInt(LOWER_BOUND, UPPER_BOUND + 1); // 100 to 600
 
@@ -44,11 +44,14 @@ public class Weapon {
         } else {
             this.x = ThreadLocalRandom.current().nextInt((int) rightX + MINIMUM_H_DISTANCE_TO_PIPE, (int) rightX + DISTANCE_BETWEEN_PIPES - MINIMUM_H_DISTANCE_TO_PIPE);
         }
+
         if (y % 2 == 0) {
+            // Bomb Type
             image = bombImage;
             isBomb = true;
             shootingRange = BOMB_RANGE;
         } else {
+            // Rock type (50% chance)
             image = rockImage;
             isBomb = false;
             shootingRange = ROCK_RANGE;
@@ -61,9 +64,9 @@ public class Weapon {
             if (!isHeld && !isReleased) {
                 x -= speed;
 
-
             }
             else if (isHeld && !isReleased) {
+                //sticking on top of bird
                 this.x = birdieX;
                 this.y = birdieY - HOLDING_SPACE;
             }
@@ -81,8 +84,10 @@ public class Weapon {
             }
 
             if (x < birdieX -  MINIMUM_H_DISTANCE_TO_PIPE){
+                // out of bounds
                 used = true;
             }
+
             image.draw(x, y);
         }
 
@@ -123,7 +128,9 @@ public class Weapon {
     }
 
     public boolean isCollided(){ return collided;}
+
     public void colliding(){collided = true; }
+
     public Point getPosition(){
         return new Point((int)x, (int) y);
     }
@@ -137,6 +144,7 @@ public class Weapon {
     }
 
     public boolean hasImpact(boolean isPlastic){
+        // all collisions count except rocks on steel pipes
         if (!isPlastic && !isBomb){
             return false;
         }
