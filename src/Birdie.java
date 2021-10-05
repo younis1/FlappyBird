@@ -26,12 +26,12 @@ public class Birdie{
         this.levelNumber = levelNumber;
 
         if (levelNumber == 1) {
-            birdWingDown = new Image("project-2-skeleton\\res\\level-1\\birdWingDown.png");
-            birdWingUp = new Image("project-2-skeleton\\res\\level-1\\birdWingUp.png");
+            birdWingDown = new Image("ynaser-project-2\\res\\level-1\\birdWingDown.png");
+            birdWingUp = new Image("ynaser-project-2\\res\\level-1\\birdWingUp.png");
         } else {
             // levelNumber is 0
-            birdWingDown = new Image("project-2-skeleton\\res\\level-0\\birdWingDown.png");
-            birdWingUp = new Image("project-2-skeleton\\res\\level-0\\birdWingUp.png");
+            birdWingDown = new Image("ynaser-project-2\\res\\level-0\\birdWingDown.png");
+            birdWingUp = new Image("ynaser-project-2\\res\\level-0\\birdWingUp.png");
         }
     }
     public void update(Input input, double percentChange){

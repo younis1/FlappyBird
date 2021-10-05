@@ -32,10 +32,10 @@ public class ShadowFlap extends AbstractGame {
     private final int FINAL_SCORE_SHIFT = 75;
     private final int S_TO_SHOOT_SHIFT = 68;
     private final int WEAPONS_INTERVAL_HUNDREDS = 5;
-    private final Font font = new Font("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\font\\slkscr.ttf", 48);
-    private final Image backgroundImageLevel0 = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-0\\background.png");
-    private final Image noLife = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\noLife.png");
-    private final Image fullLife = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\fullLife.png");
+    private final Font font = new Font("ynaser-project-2\\res\\font\\slkscr.ttf", 48);
+    private final Image backgroundImageLevel0 = new Image("ynaser-project-2\\res\\level-0\\background.png");
+    private final Image noLife = new Image("ynaser-project-2\\res\\level\\noLife.png");
+    private final Image fullLife = new Image("ynaser-project-2\\res\\level\\fullLife.png");
     private boolean gameStarted = false;
     private boolean gameEnded = false;
     private boolean level_0_completed = false;
@@ -47,7 +47,7 @@ public class ShadowFlap extends AbstractGame {
     private ArrayList<Weapon> weapons = new ArrayList<Weapon>();
     private ArrayList<Pipes> pipesLevel_1 = new ArrayList<Pipes>();
     private Birdie birdieLevel_1 = new Birdie(1);
-    private final Image backgroundImageLevel1 = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\background.png");
+    private final Image backgroundImageLevel1 = new Image("ynaser-project-2\\res\\level-1\\background.png");
     private final int WAITING_FRAMES_BETWEEN_LEVELS = 20;
     public ShadowFlap() {
     }

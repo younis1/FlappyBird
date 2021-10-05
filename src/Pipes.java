@@ -18,8 +18,8 @@ public class Pipes {
     private int levelNumber;
     private Image upperPipeImage;
     private Image lowerPipeImage;
-    private final static Image upperFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flame.png");
-    private final static Image lowerFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flameRotated.png");
+    private final static Image upperFlameImage = new Image("ynaser-project-2\\res\\level-1\\flame.png");
+    private final static Image lowerFlameImage = new Image("ynaser-project-2\\res\\level-1\\flameRotated.png");
     public static final double FLAME_HEIGHT = upperFlameImage.getHeight(); // need to be public as this is used in ShadowFlap
     private  static final double FLAME_WIDTH = upperFlameImage.getWidth();
     private static final int WINDOW_WIDTH = 1024;  // window width
@@ -50,19 +50,19 @@ public class Pipes {
             if (HighGapY % 2 == 0){
                 // STEEL PIPE
                 isPlastic = false;
-                upperPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\steelPipe.png");
-                lowerPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\steelPipeRotated.png");
+                upperPipeImage = new Image("ynaser-project-2\\res\\level-1\\steelPipe.png");
+                lowerPipeImage = new Image("ynaser-project-2\\res\\level-1\\steelPipeRotated.png");
             }
             else{
                 // Plastic Pipe
-                upperPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\plasticPipe.png");
-                lowerPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\plasticPipeRotated.png");
+                upperPipeImage = new Image("ynaser-project-2\\res\\level\\plasticPipe.png");
+                lowerPipeImage = new Image("ynaser-project-2\\res\\level\\plasticPipeRotated.png");
             }
         } else {
             // levelNumber = 0
             int option = rand.nextInt(OPTIONS_NUMBER_FOR_LEVEL_0); // 0, 1, or 2
-            upperPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\plasticPipe.png");
-            lowerPipeImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level\\plasticPipeRotated.png");
+            upperPipeImage = new Image("ynaser-project-2\\res\\level\\plasticPipe.png");
+            lowerPipeImage = new Image("ynaser-project-2\\res\\level\\plasticPipeRotated.png");
             this.upperPipeLowerY = HIGH_PIPE_Y + option*PIPES_TYPES_DIF;
 
         }

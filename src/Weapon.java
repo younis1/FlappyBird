@@ -13,12 +13,12 @@ public class Weapon {
     private static final int MINIMUM_H_DISTANCE_TO_PIPE = 100;
     private static final int DISTANCE_BETWEEN_PIPES = 300;
 
-    private static final Image bombImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\bomb.png");
+    private static final Image bombImage = new Image("ynaser-project-2\\res\\level-1\\bomb.png");
     private static final double BOMB_HEIGHT = bombImage.getHeight();
     private static final double BOMB_WIDTH = bombImage.getWidth();
     private static final double BOMB_RANGE = 50;
 
-    private static final Image rockImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\rock.png");
+    private static final Image rockImage = new Image("ynaser-project-2\\res\\level-1\\rock.png");
     private static final double ROCK_HEIGHT = rockImage.getHeight();
     private static final double ROCK_WIDTH = rockImage.getWidth();
     private static final double ROCK_RANGE = 25;
