@@ -1,4 +1,3 @@
-import bagel.DrawOptions;
 import bagel.Image;
 import bagel.Input;
 import bagel.util.Point;
@@ -6,7 +5,6 @@ import bagel.util.Rectangle;
 import java.util.concurrent.ThreadLocalRandom;
 
 import java.util.Random;
-import java.lang.Math.*;
 
 public class Pipes {
     private static final int OPTIONS_NUMBER_FOR_LEVEL_0 = 3;
@@ -21,11 +19,10 @@ public class Pipes {
     private Image lowerPipeImage;
     private static Image upperFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flame.png");
     private static Image lowerFlameImage = new Image("C:\\Users\\youni\\Desktop\\UniMelb Sem2 2021\\OOP\\Assignment2FlappyBam\\project-2-skeleton\\res\\level-1\\flameRotated.png");
-    private static final double FLAME_HEIGHT = upperFlameImage.getHeight();
+    public static final double FLAME_HEIGHT = upperFlameImage.getHeight(); // need to be public as this is used in ShadowFlap
     private  static final double FLAME_WIDTH = upperFlameImage.getWidth();
     private static final int WINDOW_WIDTH = 1024;  // window width
     private static final int WINDOW_HEIGHT = 768;  // window height
-    private static final int PIPES_GAP = 168;
     private static final int HIGH_PIPE_Y = 100;
     private static final int PIPES_TYPES_DIF = 200;
     private static final int MAX_SPEED = 5;
@@ -35,6 +32,7 @@ public class Pipes {
     private static final double MIN_CHANGE_PERCENT = 0.5;
     private static final int LOWEST_STEEL = 100;
     private static final int HIGHEST_STEEL = 500;
+    public static final int PIPES_GAP = 168; // need to be public as this is used in ShadowFlap
     private static double pipeImageHeight; //add final?
     private static double pipeImageWidth; // add final?
     private int upperPipeLowerY;
@@ -137,6 +135,7 @@ public class Pipes {
     public double getWidth(){
         return pipeImageWidth;
     }
+
     // returns (x, height of lower part of upper pipe), where x is the left coordinate of the pipe
     public Point getPosition(){
         return new Point(this.x, this.upperPipeLowerY);
@@ -168,6 +167,10 @@ public class Pipes {
 
     public void hideUpper() {
         displayUpper = false;
+    }
+
+    public boolean isItPlastic() {
+        return isPlastic;
     }
 }
 

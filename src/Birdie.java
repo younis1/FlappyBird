@@ -4,8 +4,6 @@ import bagel.Keys;
 import bagel.util.Point;
 import bagel.util.Rectangle;
 
-import java.util.PrimitiveIterator;
-
 public class Birdie{
     private static final double ACCELERATION = 0.4;
     private static final double INITIAL_X = 200;
@@ -18,7 +16,7 @@ public class Birdie{
     private double y = INITIAL_Y;
     private double speed = 0;
     private int frameCounter = 0;
-
+    private boolean hasWeapon = false;
     int levelNumber;
     private Image birdWingUp;
     private Image birdWingDown;
@@ -84,5 +82,13 @@ public class Birdie{
     public Rectangle getRectangle() {
         return new Rectangle(this.getBounds().x - getWidth(),
                 this.getBounds().y - this.getHeight(), this.getWidth(), this.getHeight());
+    }
+
+    public boolean getWeapon() {
+        return hasWeapon;
+    }
+
+    public void setWeaponary(boolean value){
+        hasWeapon = value;
     }
 }
