@@ -35,6 +35,13 @@ public class Weapon {
     private boolean used = false;
     private int frameCounter = 0;
 
+    /**
+     * generates coordinates of a weapon, based on the coordinates of last pipe to be generated
+     * @param leftX // left X of last pipe to be generated
+     * @param rightX // right X of last pipe to be generated
+     * @param upperY // upper Y of last pipe to be generated (lower part of upper pipe)
+     * @param lowerY // lower Y of last pipe to be generated (upper part of lower pipe)
+     */
     public Weapon(double leftX, double rightX, double upperY, double lowerY) {
         this.y = ThreadLocalRandom.current().nextInt(LOWER_BOUND, UPPER_BOUND + 1); // 100 to 600
 
@@ -59,6 +66,14 @@ public class Weapon {
 
     }
 
+    /**
+     * updates the position of weapon, detects "picking up", and detects "shooting", deletes unpicked weapons
+     * @param input
+     * @param speed  // speed of pipes
+     * @param birdieX // birds X coordinate
+     * @param birdieY // birds Y coordinate
+     * @param percentChange  // percent change in speed
+     */
     public void update(Input input, double speed, double birdieX, double birdieY, double percentChange) {
         if (!used) {
             if (!isHeld && !isReleased) {
@@ -93,10 +108,15 @@ public class Weapon {
 
     }
 
+    /**
+     * sets isHeld to true (when bird picks up the weapon)
+     */
     public void hold() {
         isHeld = true;
     }
-
+    /**
+     * sets released to true (when bird shoots the weapon)
+     */
     public void release(double releasedAtY) {
         if (isHeld) {
             isReleased = true;
@@ -105,44 +125,84 @@ public class Weapon {
         }
     }
 
-
+    /**
+     *
+     * @return used // checks if weapon has "expired" or already been used (deletes weapon if its used)
+     */
     public boolean isUsed(){
         return used;
     }
+
+    /**
+     * set used to true
+     */
 
     public void setUsed(){
         // in case of collisions with pipes
         used = true;
     }
 
+    /**
+     *
+     * @return rectangle // rectangle of weapon to detect picking up or collisions
+     */
     public bagel.util.Rectangle getRectangle(){
         return new Rectangle((int)x - image.getWidth()/2 , (int)y - image.getHeight()/2, (int)image.getWidth(), (int)image.getHeight());
     }
 
+    /**
+     *
+     * @return isHeld (boolean)
+     */
     public boolean getIsHeld() {
         return isHeld;
     }
-
+    /**
+     *
+     * @return isReleased (boolean)
+     */
     public boolean getIsReleased() {
         return isReleased;
     }
-
+    /**
+     *
+     * @return isCollided (boolean)
+     */
     public boolean isCollided(){ return collided;}
 
+    /**
+     *
+     * sets collided to true
+     */
     public void colliding(){collided = true; }
 
+    /**
+     *
+     * @return Point P // where P = (x,y)
+     */
     public Point getPosition(){
         return new Point((int)x, (int) y);
     }
 
+    /**
+     *
+     * @return width
+     */
     public double getWidth(){
         return image.getWidth();
     }
-
+    /**
+     *
+     * @return height
+     */
     public double getHeight(){
         return image.getHeight();
     }
-
+    /**
+     * checks whether the weapon can destroy a given pipe
+     * @param isPlastic // type of pipe
+     * @return doesImpact // boolean
+     */
     public boolean hasImpact(boolean isPlastic){
         // all collisions count except rocks on steel pipes
         if (!isPlastic && !isBomb){

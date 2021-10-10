@@ -43,7 +43,12 @@ public class Pipes {
     private boolean destroyed = false;
     Random rand = new Random();
 
+    /**
+     * Creates a pipe, generates the y coordinates, and type
+     * @param levelNumber
+     */
     public Pipes(int levelNumber) {
+
         if (levelNumber == 1) {
             int HighGapY = ThreadLocalRandom.current().nextInt(LOWEST_STEEL, HIGHEST_STEEL + 1); // 100 to 500
             this.upperPipeLowerY = HighGapY;
@@ -71,8 +76,13 @@ public class Pipes {
         this.x = WINDOW_WIDTH;
     }
 
-
+    /**
+     * Updates the coordinates of pipes
+     * Also, detects collisions (destroy pipes in collisions)
+     * @param input
+     */
     //shift both pipes
+
     public void update(Input input) {
         this.x = this.x - speed;
         if (this.displayLower) {
@@ -101,7 +111,10 @@ public class Pipes {
         }
     }
 
-
+    /**
+     * Sets new speed if timescale is within acceptable range
+     * @param speedChange // either +1 or -1
+     */
     public static void setSpeed(int speedChange){
         if (speedChange<0){
             // slowing down
@@ -121,30 +134,54 @@ public class Pipes {
         }
     }
 
+    /**
+     *
+     * @return speed
+     */
     public static double getSpeed(){
         return speed;
     }
 
+    /**
+     *
+     * @return changePercent // this calculates the percentage change in speed (relative to initial speed)
+     */
     public static double getChangePercent(){
         return changePercent;
     }
 
+    /**
+     * Resetting speed measures to default (called when levelling up)
+     */
     public static void resetSpeed(){
         speed = INITIAL_SPEED;
         speedMetre = 1;
         changePercent = 1.0;
     }
 
+    /**
+     *
+     * @return pipeImageWidth
+     */
     // returns width of pipe image
     public double getWidth(){
         return pipeImageWidth;
     }
 
-    // returns (x, height of lower part of upper pipe), where x is the left coordinate of the pipe
+    /**
+     *
+     * @return (x, y) // where x is the left coordinate of the pipe and y is height of lower part of upper pipe),
+     */
+    // returns
     public Point getPosition(){
         return new Point(this.x, this.upperPipeLowerY);
     }
 
+    /**
+     *
+     * @param withWeapon // boolean checks if we will need to detect a collision with a weapon (rather than bird)
+     * @return rectangle // rectangle used to detect collisions
+     */
     public Rectangle getUpperRectangle(boolean withWeapon){
         if (!displayUpper){
             return new Rectangle(-1, -1, 0,0); // impossible to intersect with bird
@@ -155,6 +192,12 @@ public class Pipes {
         }
         return new Rectangle(this.x,upperPipeLowerY - pipeImageHeight, pipeImageWidth, pipeImageHeight);
     }
+
+    /**
+     *
+     * @param withWeapon // boolean checks if we will need to detect a collision with a weapon (rather than bird)
+     * @return * @return rectangle // rectangle used to detect collisions
+     */
 
     public Rectangle getLowerRectangle(boolean withWeapon){
         if (!displayLower){
@@ -167,17 +210,33 @@ public class Pipes {
         return new Rectangle(this.x,upperPipeLowerY + PIPES_GAP, pipeImageWidth, pipeImageHeight);
     }
 
+    /**
+     * hides (not display and destroy) lower pipe
+     */
     public void hideLower(){
         displayLower = false;
     }
+
+    /**
+     * hides (not display and destroy) upper pipe
+     */
     public void hideUpper() {
         displayUpper = false;
     }
+
+    /**
+     * destroys a set of pipes
+     */
     public void destroy() {
         hideUpper();
         hideLower();
         destroyed = true;
     }
+
+    /**
+     *
+     * @return destroyed // boolean of whether pipes is destroyed or not
+     */
     public boolean isDestroyed(){ return destroyed;}
 
     public boolean isItPlastic() {return isPlastic;}

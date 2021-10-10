@@ -54,19 +54,20 @@ public class ShadowFlap extends AbstractGame {
 
     /**
      * The entry point for the program.
+     * @param args
      */
     public static void main(String[] args) {
         ShadowFlap game = new ShadowFlap();
         game.run();
     }
 
+
+
     /**
      * Performs a state update.
      * allows the game to exit when the escape key is pressed.
+     * @param input // input from keyboard
      */
-
-
-
     @Override
     public void update(Input input) {
 
@@ -93,23 +94,11 @@ public class ShadowFlap extends AbstractGame {
                 // set speed
                 backgroundImageLevel0.draw(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0);
                 frameCounter += Pipes.getChangePercent();  // to generate pipes every "100/frames*timescale" frames
-                if (input.wasPressed(Keys.L)) {
-                    Pipes.setSpeed(1);
-                }
-                if (input.wasPressed(Keys.K)) {
-                    Pipes.setSpeed(-1);
-                }
+                detectSpeed(input);
 
 
                 // Drawing lives
-
-                int i;
-                for (i = 0; i < emptyLives; i++) {
-                    noLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
-                }
-                for (i = emptyLives; i < LEVEL_0_LIVES; i++) {
-                    fullLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
-                }
+                drawHearts(emptyLives, 0);
 
                 // Drawing Bird
                 birdieLevel_0.update(input, Pipes.getChangePercent());
@@ -161,9 +150,10 @@ public class ShadowFlap extends AbstractGame {
             } else if (!gameStarted && !level_1_completed){
                 // Level 1 started
                 backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-                font.drawString("PRESS SPACE TO START", (WINDOW_WIDTH - font.getWidth("PRESS SPACE TO START")) / 2,
+                font.drawString("PRESS SPACE TO START",
+                        (WINDOW_WIDTH - font.getWidth("PRESS SPACE TO START")) / 2,
                         WINDOW_HEIGHT / 2);
-                font.drawString("Press S to Shoot",(WINDOW_WIDTH - font.getWidth("PRESS S TO SHOOT")) / 2,
+                font.drawString("Press S to Shoot",(WINDOW_WIDTH - font.getWidth("PRESS S TO SHOOT")) /2,
                         WINDOW_HEIGHT / 2 + S_TO_SHOOT_SHIFT);
                 if (input.wasPressed(Keys.SPACE)) {
                     this.gameStarted = true;
@@ -173,22 +163,15 @@ public class ShadowFlap extends AbstractGame {
                 // Lvl 1
                 // Drawing lives
                 backgroundImageLevel1.draw(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
-                frameCounter += Pipes.getChangePercent();  // to generate pipes every "100/frames*timescale" frames
-                if (input.wasPressed(Keys.L)) {
-                    Pipes.setSpeed(1);
-                }
-                if (input.wasPressed(Keys.K)) {
-                    Pipes.setSpeed(-1);
-                }
 
+                // to generate pipes every "100/frames*timescale" frames
+                frameCounter += Pipes.getChangePercent();
 
-                int i;
-                for (i = 0; i < emptyLives; i++) {
-                    noLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
-                }
-                for (i = emptyLives; i < LEVEL_1_LIVES; i++) {
-                    fullLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
-                }
+                // set speed
+                detectSpeed(input);
+
+                // drawing Hearts
+                drawHearts(emptyLives, 1);
 
                 // Drawing Bird
                 birdieLevel_1.update(input, Pipes.getChangePercent());
@@ -256,12 +239,21 @@ public class ShadowFlap extends AbstractGame {
         }
     }
 
-
+    /**
+     * Implements Pipes collision/pass algorithm, deletes old pipes (go out out of bound),
+     * increments score if bird passed the pipe, or subtract a heart if collision happened
+     *
+     * @param pipesLevel
+     * @param birdie
+     * @param input
+     */
     public void collisionOrScoreDetector(ArrayList<Pipes> pipesLevel, Birdie birdie, Input input){
-        // Implements Pipes collision/pass algorithm, deletes old pipes (go out out of bound)
+
         ArrayList<Integer> outOfBound = new ArrayList<Integer>();
         int i;
         int lastCollisionInScore; // if bird hits the edge, this can contribute to score
+
+        // collision detection
         for (i = 0; i < pipesLevel.size(); i++) {
             Pipes pipes = pipesLevel.get(i);
             lastCollisionInScore = 0;
@@ -272,7 +264,7 @@ public class ShadowFlap extends AbstractGame {
                 lastCollisionInScore = 1;
             }
 
-            // Delete pipes that are out of bound
+            // store index of pipes that are out of bound to delete later
             if (pipes.getPosition().x < - pipes.getWidth()) {
                 outOfBound.add((Integer) i);
             } else {
@@ -286,12 +278,18 @@ public class ShadowFlap extends AbstractGame {
             }
         }
 
+        // delete pipes that are out of bound
         for (Integer integer : outOfBound) {
             pipesLevel.remove(integer);
         }
 
     }
 
+    /**
+     * returns the coordinates of the last pipe to be generated (used to generate weapon coordinates)
+     * @param pipesLevel
+     * @return lastPipeCoordinates
+     */
     public double[] getCoordinatesOfLastPipe(ArrayList<Pipes> pipesLevel){
         // Return coordinates of last pipe to be considered when generating weapons
         int lastIndex = pipesLevel.size() - 1;
@@ -315,16 +313,26 @@ public class ShadowFlap extends AbstractGame {
         return coordinates;
     }
 
+    /**
+     * Implements everything to do with weapons, from detecting collisions, to shooting,to deleting weapons that
+     * went out of bound
+     * @param weapons
+     * @param birdie
+     * @param pipes
+     * @param input
+     */
     public void weaponsLogic(ArrayList<Weapon> weapons, Birdie birdie, ArrayList<Pipes> pipes, Input input){
-        // Implements everything to do with weapons, from detecting collisions, to shooting,to deleting weapons that
-        // went out of bound
+
+        // goes through every weapon on screen
         for (Weapon weapon: weapons){
+
             // Picks up weapon, while not carrying a weapon
             if (birdie.getRectangle().intersects(weapon.getRectangle()) && !birdie.getWeapon()
                     && !weapon.getIsReleased()){
                 weapon.hold();
                 birdie.setWeaponary(true);
             }
+
             else if (weapon.getIsHeld()){
                 // holding a weapon
                 if (input.wasPressed((Keys.S))){
@@ -337,9 +345,10 @@ public class ShadowFlap extends AbstractGame {
                 Pipes currentPipe; // detect pipe and weapons collision
                 for (int i=0; i < pipes.size() ;i++){
                     currentPipe = pipes.get(i);
+
+                    // destroy pipe if collision with pipes, and increment score
                     if (currentPipe.getLowerRectangle(true).intersects(weapon.getRectangle()) ||
                             currentPipe.getUpperRectangle(true).intersects(weapon.getRectangle()) && weapon.getIsReleased()){
-
                         weapon.colliding();
                         if (weapon.hasImpact(currentPipe.isItPlastic())){
                             currentPipe.destroy();
@@ -350,7 +359,7 @@ public class ShadowFlap extends AbstractGame {
             }
         }
 
-        // delete out of bound weapons
+        // delete out of bound weapons, and update weapons that are on the screen
         for(int i=0; i< weapons.size(); i++){
             if (weapons.get(i).isUsed()){
                 weapons.remove(i);
@@ -359,6 +368,42 @@ public class ShadowFlap extends AbstractGame {
                 weapons.get(i).update(input, Pipes.getSpeed(), birdie.getPosition().x, birdie.getPosition().y,
                         Pipes.getChangePercent());
             }
+        }
+    }
+
+    /**
+     * draws the hearts for a given level
+     * @param deadLives //number of lost hearts
+     * @param levelNumber
+     */
+    public void drawHearts(int deadLives, int levelNumber){
+        int i;
+        int maxLives;
+
+        if (levelNumber == 0){
+            maxLives = 3;
+        }
+        else{
+            maxLives = 6;
+        }
+        for (i = 0; i < deadLives; i++) {
+            noLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
+        }
+        for (i = deadLives; i < maxLives; i++) {
+            fullLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);
+        }
+    }
+
+    /**
+     * detects if player wants to change the speed, and updates speed accordingly
+     * @param input
+     */
+    public void detectSpeed(Input input){
+        if (input.wasPressed(Keys.L)) {
+            Pipes.setSpeed(1);
+        }
+        if (input.wasPressed(Keys.K)) {
+            Pipes.setSpeed(-1);
         }
     }
 }

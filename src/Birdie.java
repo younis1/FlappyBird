@@ -22,6 +22,11 @@ public class Birdie{
     private Image birdWingDown;
     private Rectangle rectangle;
 
+    /**
+     *
+     * @param levelNumber
+     * creates a new bird, depending of the level
+     */
     public Birdie(int levelNumber) {
         this.levelNumber = levelNumber;
 
@@ -34,6 +39,12 @@ public class Birdie{
             birdWingUp = new Image("ynaser-project-2\\res\\level-0\\birdWingUp.png");
         }
     }
+
+    /**
+     * displays and updates bird coordinates, with wing flap every 10 frames
+     * @param input
+     * @param percentChange // percent change in speed (compared to initial speed). This is to adapt bird accordingly
+     */
     public void update(Input input, double percentChange){
         // Drawing wing flap
         if (frameCounter % FLAP_FRAMES == 0){
@@ -55,38 +66,72 @@ public class Birdie{
         frameCounter += 1;
     }
 
+    /**
+     *
+     * @return P // where P =(x,y)
+     */
     public Point getPosition(){
         return new Point(this.x, this.y);
     }
+
+    /**
+     * sets position to x,y (when going out of bound)
+     * @param x
+     * @param y
+     */
     public void setPosition(double x, double y){
         this.x = x;
         this.y = y;
     }
-    // returns top right point
+
+    /**
+     * returns position of top right point
+     * @return Position
+     */
     public Point getBounds(){
         return new Point(this.x + birdWingUp.getWidth()/2, this.y + birdWingUp.getHeight()/2);
     }
 
-    // returns width of birdImage
+
+    /**
+     *
+     * @return birdImageWidth
+     */
     public double getWidth(){
         return (double)birdWingUp.getWidth();
     }
 
-    // returns height of birdImage
+    /**
+     *
+     * @return birdImageHeight
+     */
     public double getHeight(){
         return (double)birdWingUp.getHeight();
     }
 
     // returns rectangle of Birdie
+
+    /**
+     * used to assist with collision detection
+     * @return birdRectangle
+     */
     public Rectangle getRectangle() {
         return new Rectangle(this.getBounds().x - getWidth(),
                 this.getBounds().y - this.getHeight(), this.getWidth(), this.getHeight());
     }
 
+    /**
+     * returns whether or not bird is holding a weapon or not
+     * @return hasWeapon
+     */
     public boolean getWeapon() {
         return hasWeapon;
     }
 
+    /**
+     * sets the status of "weaponHeld" by bird to "value"
+     * @param value
+     */
     public void setWeaponary(boolean value){
         hasWeapon = value;
     }
