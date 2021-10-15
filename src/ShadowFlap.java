@@ -381,10 +381,10 @@ public class ShadowFlap extends AbstractGame {
         int maxLives;
 
         if (levelNumber == 0){
-            maxLives = 3;
+            maxLives = LEVEL_0_LIVES;
         }
         else{
-            maxLives = 6;
+            maxLives = LEVEL_1_LIVES;
         }
         for (i = 0; i < deadLives; i++) {
             noLife.drawFromTopLeft(LEFTMOST_LIFE_X + LIFE_SPACE * i, LEFTMOST_LIFE_Y);

@@ -120,7 +120,7 @@ public class Pipes {
             // slowing down
             if (speedMetre != MIN_SPEED_METRE){
                 speedMetre -= 1;
-                changePercent = Math.pow(1.5, speedMetre);
+                changePercent = Math.pow(1.5, speedMetre - 1);
                 speed = INITIAL_SPEED * changePercent; //decrease by 50%
             }
         }
