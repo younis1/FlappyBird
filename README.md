@@ -1,7 +1,7 @@
 # FlappyBird
 Flappy game
 
-Hello! This is a flappy bird game created using Java. ShadowFlap.java runs the main function.
+Hello! This is a flappy bird game created using Java. ShadowFlap.java runs the main function. Notice: You might need to fix the paths for the images (all exist within the respository)
 
 Controls:
 > Press space to jump
