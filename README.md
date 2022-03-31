@@ -4,10 +4,10 @@ Flappy game
 Hello! This is a flappy bird game created using Java. ShadowFlap.java runs the main function.
 
 Controls:
-Press space to jump
-Press L to speed up the game
-Press K to slow down the game
-Press S to shoot (in level 2)
+> Press space to jump
+> Press L to speed up the game
+> Press K to slow down the game
+> Press S to shoot (in level 2)
 
 
 For Level 1:
